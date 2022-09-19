@@ -23,11 +23,12 @@ function App() {
   const [state, setState] = useState({
     data: {},
     ticker: stockList[0].ticker,
+    apiKey: "demo"
   })
 
   const getData = (tickerCode: string) => {
     axios.get(
-      `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${tickerCode}&interval=5min&apikey=demo`
+      `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${tickerCode}&interval=5min&apikey=${state.apiKey}`
     ).then(resp =>
       setState(prevState => (({...prevState,
       "timeSeries": Object.values(resp.data["Time Series (5min)"]), 
@@ -45,7 +46,7 @@ function App() {
 
   useEffect(()=>{
     stockList.length > 0 && getData(stockList[0].ticker);
-  },[])
+  },[state.ticker])
 
   return (
     <div className="App">
@@ -55,9 +56,9 @@ function App() {
         alignItems="center"
         minHeight="100px"
       >
-         <TxtField label="Stock Ticker" />
+        <TxtField value={state.apiKey} onChange={(e:any) => setState(prevState => (({...prevState, apiKey: e.target.value})))} label="API KEY" />
         <TxtField label="Stock Ticker" />
-        <Btn onClick={getData} label="Add" color="success" />
+        <Btn label="Add" color="success" />
       </Box>
       <Box
         display="flex"
