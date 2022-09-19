@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import LineChart from './components/LineChart';
 import axios from 'axios';
 import './App.css';
+import { SliderValueLabelUnstyled } from '@mui/base';
 
 interface StockList{
   ticker: string;
@@ -19,19 +20,23 @@ function App() {
     { ticker: "IBM", name: "International Business machines" }
   ]);
 
-  const [data, setData] = useState({});
-  
-  const [ticker, setTicker] = useState('IBM');
+  const [state, setState] = useState({
+    data: {},
+    ticker: stockList[0].ticker,
+  })
 
   const getData = (tickerCode: string) => {
     axios.get(
       `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${tickerCode}&interval=5min&apikey=demo`
     ).then(resp =>
-      setData({
+      setState(prevState => (({...prevState,
       "timeSeries": Object.values(resp.data["Time Series (5min)"]), 
       "metaData": resp.data["Meta Data"],
       "labels": Object.keys(resp.data["Time Series (5min)"])
-    }));
+    }))));
+
+    stockList.push({ticker: tickerCode, name: tickerCode})
+
   }
 
   const deleteItem = (value: string) => {
@@ -50,6 +55,7 @@ function App() {
         alignItems="center"
         minHeight="100px"
       >
+         <TxtField label="Stock Ticker" />
         <TxtField label="Stock Ticker" />
         <Btn onClick={getData} label="Add" color="success" />
       </Box>
@@ -59,21 +65,24 @@ function App() {
         alignItems="center"
         minHeight="300px"
       >
-        <StockList onChange={(value:any) => setTicker(value)} data={stockList} label="Stock List" />
+        <StockList onChange={(value:any) => setState(
+          prevState => (({...prevState, ticker: value}))
+
+        )} data={stockList} label="Stock List" />
         <Box
           display="flex"
           flexDirection="column"
           justifyContent="center"
           minHeight="300px"
         >
-          <Btn onClick={() => deleteItem(ticker)} label="Delete" color="error" />
+          <Btn onClick={() => deleteItem(state.ticker)} label="Delete" color="error" />
         </Box>
       </Box>
-      <Box>
+      <Box style={{width: "1000px", marginLeft:"auto", marginRight:"auto"}}>
         <Typography variant="h3" gutterBottom>
-          {ticker  ? ticker : 'N/A'}
+          {state.ticker  ? state.ticker : 'N/A'}
         </Typography>
-        <LineChart data={data}/>
+        <LineChart data={state}/>
       </Box>
     </div>
   );
