@@ -2,7 +2,7 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 
 interface txtFeildProps{
-  onClick?: any;
+  onClick?: () => void;
   label: string;
   color: "inherit" | "primary" | "secondary" | "success" | "error" | "info" | "warning" | undefined;
 }
