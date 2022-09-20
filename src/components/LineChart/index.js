@@ -57,7 +57,7 @@ const LineChart = (props) => {
       },
       title: {
         display: true,
-        text: 'Chart.js Line Chart',
+        text: 'Stock Open/Close price',
       },
     },
   };

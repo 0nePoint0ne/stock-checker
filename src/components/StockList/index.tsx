@@ -36,7 +36,7 @@ const StockList = (props: StockListProps) => {
                 const {ticker, name} = item;
                 return (
                 <option key={index} value={ticker}>
-                  {`${name} ${ticker}`}
+                  {`${name} (${ticker})`}
                 </option>
               )})}
             </Select>
